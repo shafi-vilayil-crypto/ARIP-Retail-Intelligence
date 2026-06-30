@@ -42,7 +42,7 @@ export default function ScoringEngine() {
   useEffect(() => {
     if (weights) {
       const vals: Record<string, number> = {};
-      WEIGHT_FIELDS.forEach(f => { vals[f.key] = (weights as Record<string, number>)[f.key] ?? 0; });
+      WEIGHT_FIELDS.forEach(f => { vals[f.key] = (weights as any)[f.key] ?? 0; });
       setLocal(vals);
     }
   }, [weights]);

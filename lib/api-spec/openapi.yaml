@@ -22,6 +22,10 @@ tags:
     description: Financial simulation
   - name: dashboard
     description: Executive dashboard
+  - name: companies
+    description: Company profiles and AI agent analysis
+  - name: gemini
+    description: Gemini AI chat and image operations
 
 paths:
   /healthz:
@@ -532,6 +536,147 @@ paths:
                 items:
                   $ref: "#/components/schemas/CompetitorHeatmapEntry"
 
+  # ─── Companies ──────────────────────────────────────────────
+  /companies:
+    get:
+      operationId: listCompanies
+      tags: [companies]
+      summary: List all company profiles
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+    post:
+      operationId: createCompany
+      tags: [companies]
+      summary: Create a company profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+
+  /companies/{id}:
+    get:
+      operationId: getCompany
+      tags: [companies]
+      summary: Get a company profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateCompany
+      tags: [companies]
+      summary: Update a company profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+    delete:
+      operationId: deleteCompany
+      tags: [companies]
+      summary: Delete a company profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Deleted
+
+  /companies/{id}/analyze:
+    post:
+      operationId: analyzeCompany
+      tags: [companies]
+      summary: Trigger AI agent analysis for a company (SSE stream)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: SSE stream of agent progress
+          content:
+            text/event-stream: {}
+
+  /companies/{id}/results:
+    get:
+      operationId: getCompanyResults
+      tags: [companies]
+      summary: Get all analysis results for a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnalysisResult"
+
+  /companies/{id}/dashboard:
+    get:
+      operationId: getCompanyDashboard
+      tags: [companies]
+      summary: Get generated dashboard data for a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyDashboard"
+
 components:
   schemas:
     HealthStatus:
@@ -934,3 +1079,94 @@ components:
         count:        { type: integer }
         dominantType: { type: string }
         avgRating:    { type: ["number", "null"] }
+
+    # ─── Company ────────────────────────────────────────────────
+    Company:
+      type: object
+      required: [id, name, industry, headquarters, analysisStatus, analysisProgress, createdAt]
+      properties:
+        id:              { type: integer }
+        name:            { type: string }
+        industry:        { type: string }
+        headquarters:    { type: string }
+        currentStates:   { type: array, items: { type: string } }
+        businessModel:   { type: string }
+        products:        { type: array, items: { type: string } }
+        competitors:     { type: array, items: { type: string } }
+        expansionGoal:   { type: string }
+        expansionScope:  { type: string }
+        expansionStates: { type: array, items: { type: string } }
+        timeline:        { type: string }
+        budget:          { type: ["string", "null"] }
+        analysisStatus:  { type: string, enum: [idle, running, completed, failed] }
+        analysisProgress: { type: number }
+        analysisLog:     { type: array, items: { type: string } }
+        createdAt:       { type: string }
+        updatedAt:       { type: ["string", "null"] }
+
+    CompanyInput:
+      type: object
+      required: [name, headquarters]
+      properties:
+        name:            { type: string }
+        industry:        { type: string }
+        headquarters:    { type: string }
+        currentStates:   { type: array, items: { type: string } }
+        businessModel:   { type: string }
+        products:        { type: array, items: { type: string } }
+        competitors:     { type: array, items: { type: string } }
+        expansionGoal:   { type: string }
+        expansionScope:  { type: string }
+        expansionStates: { type: array, items: { type: string } }
+        timeline:        { type: string }
+        budget:          { type: string }
+
+    CompanyUpdate:
+      type: object
+      properties:
+        name:            { type: string }
+        industry:        { type: string }
+        headquarters:    { type: string }
+        currentStates:   { type: array, items: { type: string } }
+        businessModel:   { type: string }
+        products:        { type: array, items: { type: string } }
+        competitors:     { type: array, items: { type: string } }
+        expansionGoal:   { type: string }
+        expansionScope:  { type: string }
+        expansionStates: { type: array, items: { type: string } }
+        timeline:        { type: string }
+        budget:          { type: string }
+
+    AnalysisResult:
+      type: object
+      required: [id, companyId, agentName, resultType, data, createdAt]
+      properties:
+        id:          { type: integer }
+        companyId:   { type: integer }
+        agentName:   { type: string }
+        resultType:  { type: string }
+        data:        { type: object, additionalProperties: true }
+        summary:     { type: ["string", "null"] }
+        confidence:  { type: ["number", "null"] }
+        createdAt:   { type: string }
+
+    CompanyDashboard:
+      type: object
+      required: [companyId, companyName, analysisStatus]
+      properties:
+        companyId:        { type: integer }
+        companyName:      { type: string }
+        analysisStatus:   { type: string }
+        topState:         { type: ["string", "null"] }
+        topDistrict:      { type: ["string", "null"] }
+        bestTown:         { type: ["string", "null"] }
+        expansionScore:   { type: ["number", "null"] }
+        expectedRoiMonths: { type: ["number", "null"] }
+        competition:      { type: ["string", "null"] }
+        investment:       { type: ["string", "null"] }
+        deliveryReady:    { type: ["boolean", "null"] }
+        topLocations:     { type: array, items: { $ref: "#/components/schemas/LocationRanking" } }
+        marketInsights:   { type: array, items: { type: string } }
+        competitorSummary: { type: array, items: { type: object, additionalProperties: true } }
+        financialHighlights: { type: object, additionalProperties: true }
+        agentResults:     { type: array, items: { $ref: "#/components/schemas/AnalysisResult" } }

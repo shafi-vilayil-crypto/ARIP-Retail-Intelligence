@@ -5,6 +5,7 @@ import marketsRouter from "./markets";
 import competitorsRouter from "./competitors";
 import scoringRouter from "./scoring";
 import dashboardRouter from "./dashboard";
+import companiesRouter from "./companies";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(marketsRouter);
 router.use(competitorsRouter);
 router.use(scoringRouter);
 router.use(dashboardRouter);
+router.use(companiesRouter);
 
 export default router;

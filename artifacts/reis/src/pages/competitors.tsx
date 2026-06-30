@@ -52,11 +52,13 @@ export default function Competitors() {
   const [filterCity, setFilterCity] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { data: competitors, isLoading } = useListCompetitors({
+  const { data: competitorsRaw, isLoading } = useListCompetitors({
     type: filterType || undefined,
     city: filterCity || undefined,
   });
-  const { data: heatmap } = useGetCompetitorHeatmap();
+  const competitors = Array.isArray(competitorsRaw) ? competitorsRaw : [];
+  const { data: heatmapRaw } = useGetCompetitorHeatmap();
+  const heatmap = Array.isArray(heatmapRaw) ? heatmapRaw : [];
   const createMut = useCreateCompetitor({
     mutation: {
       onSuccess: () => {

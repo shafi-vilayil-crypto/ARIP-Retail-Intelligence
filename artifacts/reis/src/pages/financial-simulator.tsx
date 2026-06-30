@@ -28,7 +28,8 @@ export default function FinancialSimulator() {
   const qc = useQueryClient();
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const { data: locations } = useListLocations();
+  const { data: locationsRaw } = useListLocations();
+  const locations = Array.isArray(locationsRaw) ? locationsRaw : [];
   const { data: financial, isLoading: loadingFin } = useGetLocationFinancial(selectedId ?? 0, {
     query: { enabled: !!selectedId, queryKey: getGetLocationFinancialQueryKey(selectedId ?? 0) }
   });

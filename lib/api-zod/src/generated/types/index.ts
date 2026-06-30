@@ -6,6 +6,15 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './analysisResult';
+export * from './analysisResultData';
+export * from './company';
+export * from './companyAnalysisStatus';
+export * from './companyDashboard';
+export * from './companyDashboardCompetitorSummaryItem';
+export * from './companyDashboardFinancialHighlights';
+export * from './companyInput';
+export * from './companyUpdate';
 export * from './competitor';
 export * from './competitorHeatmapEntry';
 export * from './competitorInput';

@@ -41,7 +41,8 @@ export default function Locations() {
     minScore: minScore ? Number(minScore) : undefined,
   };
 
-  const { data: locations, isLoading } = useListLocations(params);
+  const { data: locationsRaw, isLoading } = useListLocations(params);
+  const locations = Array.isArray(locationsRaw) ? locationsRaw : [];
   const deleteMut = useDeleteLocation({ mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getListLocationsQueryKey() }) } });
 
   return (

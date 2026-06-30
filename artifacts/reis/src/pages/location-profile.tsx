@@ -145,7 +145,7 @@ export default function LocationProfile() {
           <CardHeader><CardTitle className="font-mono text-sm uppercase tracking-widest text-muted-foreground">Score Breakdown</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {SCORE_DIMS.map((dim, i) => {
-              const val = (loc as Record<string, unknown>)[dim.key] as number | null;
+              const val = (loc as any)[dim.key] as number | null;
               return (
                 <motion.div key={dim.key} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
                   <div className="flex justify-between text-xs font-mono mb-1">
@@ -165,10 +165,10 @@ export default function LocationProfile() {
           <CardContent>
             <div className="grid grid-cols-2 gap-3 text-sm">
               {[
-                { icon: Users, label: "Population", val: fmt(loc.population) },
-                { icon: IndianRupee, label: "Avg Income/mo", val: fmt(loc.avgMonthlyIncome, "₹") },
-                { icon: TrendingUp, label: "Daily Footfall", val: fmt(loc.footfallPerDay) },
-                { icon: Truck, label: "Delivery Score", val: loc.deliveryDemandScore != null ? `${loc.deliveryDemandScore.toFixed(0)}/100` : "—" },
+                { icon: Users, label: "Population", val: fmt((loc as any).population) },
+                { icon: IndianRupee, label: "Avg Income/mo", val: fmt((loc as any).avgMonthlyIncome, "₹") },
+                { icon: TrendingUp, label: "Daily Footfall", val: fmt((loc as any).footfallPerDay) },
+                { icon: Truck, label: "Delivery Score", val: (loc as any).deliveryDemandScore != null ? `${((loc as any).deliveryDemandScore as number).toFixed(0)}/100` : "—" },
               ].map(item => (
                 <div key={item.label} className="flex items-start gap-2 p-2 rounded bg-muted/30">
                   <item.icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
@@ -181,9 +181,9 @@ export default function LocationProfile() {
             </div>
             <Separator className="my-3" />
             <div className="grid grid-cols-3 gap-2 text-xs font-mono">
-              <div className={`text-center p-1.5 rounded ${loc.roadAccess ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Road Access</div>
-              <div className={`text-center p-1.5 rounded ${loc.parkingAvailable ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Parking</div>
-              <div className={`text-center p-1.5 rounded ${loc.publicTransport ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Transit</div>
+              <div className={`text-center p-1.5 rounded ${(loc as any).roadAccess ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Road Access</div>
+              <div className={`text-center p-1.5 rounded ${(loc as any).parkingAvailable ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Parking</div>
+              <div className={`text-center p-1.5 rounded ${(loc as any).publicTransport ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>Transit</div>
             </div>
           </CardContent>
         </Card>

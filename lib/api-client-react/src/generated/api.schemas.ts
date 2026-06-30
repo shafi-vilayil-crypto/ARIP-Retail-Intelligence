@@ -522,6 +522,115 @@ export interface CompetitorHeatmapEntry {
   avgRating?: number | null;
 }
 
+export type CompanyAnalysisStatus = typeof CompanyAnalysisStatus[keyof typeof CompanyAnalysisStatus];
+
+
+export const CompanyAnalysisStatus = {
+  idle: 'idle',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed',
+} as const;
+
+export interface Company {
+  id: number;
+  name: string;
+  industry: string;
+  headquarters: string;
+  currentStates?: string[];
+  businessModel?: string;
+  products?: string[];
+  competitors?: string[];
+  expansionGoal?: string;
+  expansionScope?: string;
+  expansionStates?: string[];
+  timeline?: string;
+  /** @nullable */
+  budget?: string | null;
+  analysisStatus: CompanyAnalysisStatus;
+  analysisProgress: number;
+  analysisLog?: string[];
+  createdAt: string;
+  /** @nullable */
+  updatedAt?: string | null;
+}
+
+export interface CompanyInput {
+  name: string;
+  industry?: string;
+  headquarters: string;
+  currentStates?: string[];
+  businessModel?: string;
+  products?: string[];
+  competitors?: string[];
+  expansionGoal?: string;
+  expansionScope?: string;
+  expansionStates?: string[];
+  timeline?: string;
+  budget?: string;
+}
+
+export interface CompanyUpdate {
+  name?: string;
+  industry?: string;
+  headquarters?: string;
+  currentStates?: string[];
+  businessModel?: string;
+  products?: string[];
+  competitors?: string[];
+  expansionGoal?: string;
+  expansionScope?: string;
+  expansionStates?: string[];
+  timeline?: string;
+  budget?: string;
+}
+
+export type AnalysisResultData = { [key: string]: unknown };
+
+export interface AnalysisResult {
+  id: number;
+  companyId: number;
+  agentName: string;
+  resultType: string;
+  data: AnalysisResultData;
+  /** @nullable */
+  summary?: string | null;
+  /** @nullable */
+  confidence?: number | null;
+  createdAt: string;
+}
+
+export type CompanyDashboardCompetitorSummaryItem = { [key: string]: unknown };
+
+export type CompanyDashboardFinancialHighlights = { [key: string]: unknown };
+
+export interface CompanyDashboard {
+  companyId: number;
+  companyName: string;
+  analysisStatus: string;
+  /** @nullable */
+  topState?: string | null;
+  /** @nullable */
+  topDistrict?: string | null;
+  /** @nullable */
+  bestTown?: string | null;
+  /** @nullable */
+  expansionScore?: number | null;
+  /** @nullable */
+  expectedRoiMonths?: number | null;
+  /** @nullable */
+  competition?: string | null;
+  /** @nullable */
+  investment?: string | null;
+  /** @nullable */
+  deliveryReady?: boolean | null;
+  topLocations?: LocationRanking[];
+  marketInsights?: string[];
+  competitorSummary?: CompanyDashboardCompetitorSummaryItem[];
+  financialHighlights?: CompanyDashboardFinancialHighlights;
+  agentResults?: AnalysisResult[];
+}
+
 export type ListLocationsParams = {
 /**
  * @nullable

@@ -48,7 +48,8 @@ export default function Markets() {
   const [filterLevel, setFilterLevel] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { data: markets, isLoading } = useListMarkets({ level: filterLevel || undefined });
+  const { data: marketsRaw, isLoading } = useListMarkets({ level: filterLevel || undefined });
+  const markets = Array.isArray(marketsRaw) ? marketsRaw : [];
   const deleteMut = useDeleteMarket({ mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getListMarketsQueryKey() }) } });
   const createMut = useCreateMarket({
     mutation: {

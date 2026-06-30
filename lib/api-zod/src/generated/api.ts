@@ -891,3 +891,231 @@ export const GetCompetitorHeatmapResponseItem = zod.object({
 export const GetCompetitorHeatmapResponse = zod.array(GetCompetitorHeatmapResponseItem)
 
 
+/**
+ * @summary List all company profiles
+ */
+export const ListCompaniesResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "industry": zod.string(),
+  "headquarters": zod.string(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().nullish(),
+  "analysisStatus": zod.enum(['idle', 'running', 'completed', 'failed']),
+  "analysisProgress": zod.number(),
+  "analysisLog": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().nullish()
+})
+export const ListCompaniesResponse = zod.array(ListCompaniesResponseItem)
+
+
+/**
+ * @summary Create a company profile
+ */
+export const CreateCompanyBody = zod.object({
+  "name": zod.string(),
+  "industry": zod.string().optional(),
+  "headquarters": zod.string(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().optional()
+})
+
+export const CreateCompanyResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "industry": zod.string(),
+  "headquarters": zod.string(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().nullish(),
+  "analysisStatus": zod.enum(['idle', 'running', 'completed', 'failed']),
+  "analysisProgress": zod.number(),
+  "analysisLog": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().nullish()
+})
+
+
+/**
+ * @summary Get a company profile
+ */
+export const GetCompanyParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCompanyResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "industry": zod.string(),
+  "headquarters": zod.string(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().nullish(),
+  "analysisStatus": zod.enum(['idle', 'running', 'completed', 'failed']),
+  "analysisProgress": zod.number(),
+  "analysisLog": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update a company profile
+ */
+export const UpdateCompanyParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateCompanyBody = zod.object({
+  "name": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "headquarters": zod.string().optional(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().optional()
+})
+
+export const UpdateCompanyResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "industry": zod.string(),
+  "headquarters": zod.string(),
+  "currentStates": zod.array(zod.string()).optional(),
+  "businessModel": zod.string().optional(),
+  "products": zod.array(zod.string()).optional(),
+  "competitors": zod.array(zod.string()).optional(),
+  "expansionGoal": zod.string().optional(),
+  "expansionScope": zod.string().optional(),
+  "expansionStates": zod.array(zod.string()).optional(),
+  "timeline": zod.string().optional(),
+  "budget": zod.string().nullish(),
+  "analysisStatus": zod.enum(['idle', 'running', 'completed', 'failed']),
+  "analysisProgress": zod.number(),
+  "analysisLog": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().nullish()
+})
+
+
+/**
+ * @summary Delete a company profile
+ */
+export const DeleteCompanyParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteCompanyResponse = zod.void()
+
+
+/**
+ * @summary Trigger AI agent analysis for a company (SSE stream)
+ */
+export const AnalyzeCompanyParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AnalyzeCompanyResponse = zod.unknown()
+
+
+/**
+ * @summary Get all analysis results for a company
+ */
+export const GetCompanyResultsParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCompanyResultsResponseItem = zod.object({
+  "id": zod.number(),
+  "companyId": zod.number(),
+  "agentName": zod.string(),
+  "resultType": zod.string(),
+  "data": zod.record(zod.string(), zod.unknown()),
+  "summary": zod.string().nullish(),
+  "confidence": zod.number().nullish(),
+  "createdAt": zod.string()
+})
+export const GetCompanyResultsResponse = zod.array(GetCompanyResultsResponseItem)
+
+
+/**
+ * @summary Get generated dashboard data for a company
+ */
+export const GetCompanyDashboardParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCompanyDashboardResponse = zod.object({
+  "companyId": zod.number(),
+  "companyName": zod.string(),
+  "analysisStatus": zod.string(),
+  "topState": zod.string().nullish(),
+  "topDistrict": zod.string().nullish(),
+  "bestTown": zod.string().nullish(),
+  "expansionScore": zod.number().nullish(),
+  "expectedRoiMonths": zod.number().nullish(),
+  "competition": zod.string().nullish(),
+  "investment": zod.string().nullish(),
+  "deliveryReady": zod.boolean().nullish(),
+  "topLocations": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "city": zod.string(),
+  "state": zod.string(),
+  "overallScore": zod.number(),
+  "demandScore": zod.number().nullish(),
+  "competitionScore": zod.number().nullish(),
+  "logisticsScore": zod.number().nullish(),
+  "recommendation": zod.string(),
+  "riskLevel": zod.string(),
+  "confidenceLevel": zod.string().optional(),
+  "rank": zod.number().optional()
+})).optional(),
+  "marketInsights": zod.array(zod.string()).optional(),
+  "competitorSummary": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "financialHighlights": zod.record(zod.string(), zod.unknown()).optional(),
+  "agentResults": zod.array(zod.object({
+  "id": zod.number(),
+  "companyId": zod.number(),
+  "agentName": zod.string(),
+  "resultType": zod.string(),
+  "data": zod.record(zod.string(), zod.unknown()),
+  "summary": zod.string().nullish(),
+  "confidence": zod.number().nullish(),
+  "createdAt": zod.string()
+})).optional()
+})
+
+
