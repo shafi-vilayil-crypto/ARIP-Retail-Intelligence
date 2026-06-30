@@ -3,13 +3,26 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Retail Expansion Intelligence System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: locations
+    description: Candidate location management
+  - name: markets
+    description: Market hierarchy management
+  - name: competitors
+    description: Competitor intelligence
+  - name: scoring
+    description: AI scoring engine
+  - name: financial
+    description: Financial simulation
+  - name: dashboard
+    description: Executive dashboard
+
 paths:
   /healthz:
     get:
@@ -24,6 +37,501 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── Locations ──────────────────────────────────────────────
+  /locations:
+    get:
+      operationId: listLocations
+      tags: [locations]
+      summary: List candidate locations
+      parameters:
+        - name: marketId
+          in: query
+          schema: { type: ["integer", "null"] }
+        - name: state
+          in: query
+          schema: { type: ["string", "null"] }
+        - name: city
+          in: query
+          schema: { type: ["string", "null"] }
+        - name: minScore
+          in: query
+          schema: { type: ["number", "null"] }
+        - name: status
+          in: query
+          schema: { type: ["string", "null"] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Location"
+    post:
+      operationId: createLocation
+      tags: [locations]
+      summary: Add a candidate location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+
+  /locations/{id}:
+    get:
+      operationId: getLocation
+      tags: [locations]
+      summary: Get location details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationDetail"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateLocation
+      tags: [locations]
+      summary: Update location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+    delete:
+      operationId: deleteLocation
+      tags: [locations]
+      summary: Delete location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Deleted
+
+  /locations/{id}/score:
+    post:
+      operationId: scoreLocation
+      tags: [locations]
+      summary: Run AI scoring for a location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Score result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoreResult"
+
+  /locations/{id}/financial:
+    get:
+      operationId: getLocationFinancial
+      tags: [locations]
+      summary: Get financial simulation for a location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialSimulation"
+    patch:
+      operationId: updateLocationFinancial
+      tags: [locations]
+      summary: Update financial inputs for a location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FinancialInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialSimulation"
+
+  /locations/{id}/competitors:
+    get:
+      operationId: getLocationCompetitors
+      tags: [locations]
+      summary: Get competitors near a location
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Competitor"
+
+  # ─── Markets ────────────────────────────────────────────────
+  /markets:
+    get:
+      operationId: listMarkets
+      tags: [markets]
+      summary: List markets
+      parameters:
+        - name: level
+          in: query
+          schema: { type: ["string", "null"] }
+        - name: parentId
+          in: query
+          schema: { type: ["integer", "null"] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Market"
+    post:
+      operationId: createMarket
+      tags: [markets]
+      summary: Add a market
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Market"
+
+  /markets/{id}:
+    get:
+      operationId: getMarket
+      tags: [markets]
+      summary: Get market details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Market"
+    patch:
+      operationId: updateMarket
+      tags: [markets]
+      summary: Update market
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Market"
+    delete:
+      operationId: deleteMarket
+      tags: [markets]
+      summary: Delete market
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Deleted
+
+  /markets/{id}/ranking:
+    get:
+      operationId: getMarketRanking
+      tags: [markets]
+      summary: Get ranked locations within a market
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocationRanking"
+
+  # ─── Competitors ─────────────────────────────────────────────
+  /competitors:
+    get:
+      operationId: listCompetitors
+      tags: [competitors]
+      summary: List competitors
+      parameters:
+        - name: type
+          in: query
+          schema: { type: ["string", "null"] }
+        - name: city
+          in: query
+          schema: { type: ["string", "null"] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Competitor"
+    post:
+      operationId: createCompetitor
+      tags: [competitors]
+      summary: Add a competitor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompetitorInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Competitor"
+
+  /competitors/{id}:
+    get:
+      operationId: getCompetitor
+      tags: [competitors]
+      summary: Get competitor details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Competitor"
+    patch:
+      operationId: updateCompetitor
+      tags: [competitors]
+      summary: Update competitor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompetitorUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Competitor"
+    delete:
+      operationId: deleteCompetitor
+      tags: [competitors]
+      summary: Delete competitor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Scoring weights ─────────────────────────────────────────
+  /scoring/weights:
+    get:
+      operationId: getScoringWeights
+      tags: [scoring]
+      summary: Get AI scoring weights
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoringWeights"
+    patch:
+      operationId: updateScoringWeights
+      tags: [scoring]
+      summary: Update AI scoring weights
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScoringWeightsUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoringWeights"
+
+  # ─── Dashboard / aggregates ────────────────────────────────
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Executive dashboard summary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/top-locations:
+    get:
+      operationId: getTopLocations
+      tags: [dashboard]
+      summary: Top-ranked expansion candidate locations
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: ["integer", "null"] }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocationRanking"
+
+  /dashboard/state-rankings:
+    get:
+      operationId: getStateRankings
+      tags: [dashboard]
+      summary: State-level expansion ranking
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StateRanking"
+
+  /dashboard/score-distribution:
+    get:
+      operationId: getScoreDistribution
+      tags: [dashboard]
+      summary: Distribution of expansion scores across all locations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScoreBucket"
+
+  /dashboard/competitor-heatmap:
+    get:
+      operationId: getCompetitorHeatmap
+      tags: [dashboard]
+      summary: Competitor density by city
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompetitorHeatmapEntry"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +539,398 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    # ─── Location ──────────────────────────────────────────────
+    Location:
+      type: object
+      required: [id, name, state, city, latitude, longitude, status, overallScore, recommendation, riskLevel, confidenceLevel, createdAt]
+      properties:
+        id:           { type: integer }
+        name:         { type: string }
+        address:      { type: ["string", "null"] }
+        state:        { type: string }
+        district:     { type: ["string", "null"] }
+        city:         { type: string }
+        ward:         { type: ["string", "null"] }
+        microMarket:  { type: ["string", "null"] }
+        latitude:     { type: number }
+        longitude:    { type: number }
+        status:       { type: string, enum: [candidate, shortlisted, approved, rejected] }
+        marketId:     { type: ["integer", "null"] }
+        overallScore: { type: number }
+        demandScore:  { type: ["number", "null"] }
+        competitionScore: { type: ["number", "null"] }
+        logisticsScore:   { type: ["number", "null"] }
+        financialScore:   { type: ["number", "null"] }
+        accessibilityScore: { type: ["number", "null"] }
+        growthScore:  { type: ["number", "null"] }
+        recommendation: { type: string, enum: [expand, watch, avoid, under_review] }
+        riskLevel:    { type: string, enum: [low, medium, high] }
+        confidenceLevel: { type: string, enum: [low, medium, high] }
+        notes:        { type: ["string", "null"] }
+        createdAt:    { type: string }
+        updatedAt:    { type: ["string", "null"] }
+
+    LocationDetail:
+      allOf:
+        - $ref: "#/components/schemas/Location"
+        - type: object
+          properties:
+            demandProfile:
+              $ref: "#/components/schemas/DemandProfile"
+            financialSimulation:
+              $ref: "#/components/schemas/FinancialSimulation"
+            scoreBreakdown:
+              $ref: "#/components/schemas/ScoreBreakdown"
+            nearbyCompetitors:
+              type: array
+              items:
+                $ref: "#/components/schemas/Competitor"
+
+    LocationInput:
+      type: object
+      required: [name, state, city, latitude, longitude]
+      properties:
+        name:         { type: string }
+        address:      { type: string }
+        state:        { type: string }
+        district:     { type: string }
+        city:         { type: string }
+        ward:         { type: string }
+        microMarket:  { type: string }
+        latitude:     { type: number }
+        longitude:    { type: number }
+        status:       { type: string }
+        marketId:     { type: integer }
+        notes:        { type: string }
+        population:   { type: number }
+        populationDensity: { type: number }
+        avgMonthlyIncome: { type: number }
+        footfallPerDay: { type: number }
+        deliveryDemandScore: { type: number }
+        roadAccess:   { type: boolean }
+        parkingAvailable: { type: boolean }
+        publicTransport: { type: boolean }
+        walkabilityScore: { type: number }
+        rentalCostPerSqft: { type: number }
+
+    LocationUpdate:
+      type: object
+      properties:
+        name:         { type: string }
+        address:      { type: string }
+        state:        { type: string }
+        district:     { type: string }
+        city:         { type: string }
+        ward:         { type: string }
+        microMarket:  { type: string }
+        status:       { type: string }
+        notes:        { type: string }
+        population:   { type: number }
+        populationDensity: { type: number }
+        avgMonthlyIncome: { type: number }
+        footfallPerDay: { type: number }
+        deliveryDemandScore: { type: number }
+        roadAccess:   { type: boolean }
+        parkingAvailable: { type: boolean }
+        rentalCostPerSqft: { type: number }
+
+    LocationRanking:
+      type: object
+      required: [id, name, city, state, overallScore, recommendation, riskLevel]
+      properties:
+        id:           { type: integer }
+        name:         { type: string }
+        city:         { type: string }
+        state:        { type: string }
+        overallScore: { type: number }
+        demandScore:  { type: ["number", "null"] }
+        competitionScore: { type: ["number", "null"] }
+        logisticsScore: { type: ["number", "null"] }
+        recommendation: { type: string }
+        riskLevel:    { type: string }
+        confidenceLevel: { type: string }
+        rank:         { type: integer }
+
+    # ─── Market ────────────────────────────────────────────────
+    Market:
+      type: object
+      required: [id, name, level, state, createdAt]
+      properties:
+        id:          { type: integer }
+        name:        { type: string }
+        level:       { type: string, enum: [country, state, district, city, town, ward, micro_market] }
+        state:       { type: string }
+        district:    { type: ["string", "null"] }
+        city:        { type: ["string", "null"] }
+        parentId:    { type: ["integer", "null"] }
+        population:  { type: ["number", "null"] }
+        populationDensity: { type: ["number", "null"] }
+        avgIncome:   { type: ["number", "null"] }
+        urbanizationRate: { type: ["number", "null"] }
+        growthRate:  { type: ["number", "null"] }
+        locationCount: { type: integer }
+        avgScore:    { type: ["number", "null"] }
+        notes:       { type: ["string", "null"] }
+        createdAt:   { type: string }
+
+    MarketInput:
+      type: object
+      required: [name, level, state]
+      properties:
+        name:         { type: string }
+        level:        { type: string }
+        state:        { type: string }
+        district:     { type: string }
+        city:         { type: string }
+        parentId:     { type: integer }
+        population:   { type: number }
+        populationDensity: { type: number }
+        avgIncome:    { type: number }
+        urbanizationRate: { type: number }
+        growthRate:   { type: number }
+        notes:        { type: string }
+
+    MarketUpdate:
+      type: object
+      properties:
+        name:         { type: string }
+        population:   { type: number }
+        populationDensity: { type: number }
+        avgIncome:    { type: number }
+        urbanizationRate: { type: number }
+        growthRate:   { type: number }
+        notes:        { type: string }
+
+    # ─── Competitor ────────────────────────────────────────────
+    Competitor:
+      type: object
+      required: [id, name, type, city, state, createdAt]
+      properties:
+        id:               { type: integer }
+        name:             { type: string }
+        brand:            { type: ["string", "null"] }
+        type:             { type: string, enum: [milma_booth, juice_shop, tea_shop, bubble_tea, cafe, fresh_juice_chain, ice_cream_chain, convenience_store, mall_food_court, petrol_station, other] }
+        city:             { type: string }
+        state:            { type: string }
+        latitude:         { type: ["number", "null"] }
+        longitude:        { type: ["number", "null"] }
+        address:          { type: ["string", "null"] }
+        priceRange:       { type: ["string", "null"], enum: [budget, mid, premium, null] }
+        avgRating:        { type: ["number", "null"] }
+        reviewCount:      { type: ["integer", "null"] }
+        deliveryAvailable: { type: ["boolean", "null"] }
+        operatingHours:   { type: ["string", "null"] }
+        strengths:        { type: ["string", "null"] }
+        weaknesses:       { type: ["string", "null"] }
+        marketShare:      { type: ["number", "null"] }
+        notes:            { type: ["string", "null"] }
+        createdAt:        { type: string }
+
+    CompetitorInput:
+      type: object
+      required: [name, type, city, state]
+      properties:
+        name:             { type: string }
+        brand:            { type: string }
+        type:             { type: string }
+        city:             { type: string }
+        state:            { type: string }
+        latitude:         { type: number }
+        longitude:        { type: number }
+        address:          { type: string }
+        priceRange:       { type: string }
+        avgRating:        { type: number }
+        reviewCount:      { type: integer }
+        deliveryAvailable: { type: boolean }
+        operatingHours:   { type: string }
+        strengths:        { type: string }
+        weaknesses:       { type: string }
+        marketShare:      { type: number }
+        notes:            { type: string }
+
+    CompetitorUpdate:
+      type: object
+      properties:
+        name:             { type: string }
+        brand:            { type: string }
+        priceRange:       { type: string }
+        avgRating:        { type: number }
+        reviewCount:      { type: integer }
+        deliveryAvailable: { type: boolean }
+        operatingHours:   { type: string }
+        strengths:        { type: string }
+        weaknesses:       { type: string }
+        marketShare:      { type: number }
+        notes:            { type: string }
+
+    # ─── Demand Profile ────────────────────────────────────────
+    DemandProfile:
+      type: object
+      properties:
+        workingProfessionals: { type: ["number", "null"] }
+        students:             { type: ["number", "null"] }
+        hostelResidents:      { type: ["number", "null"] }
+        pgResidents:          { type: ["number", "null"] }
+        tourists:             { type: ["number", "null"] }
+        families:             { type: ["number", "null"] }
+        deliveryUsers:        { type: ["number", "null"] }
+        officeEmployees:      { type: ["number", "null"] }
+        gymUsers:             { type: ["number", "null"] }
+        eveningCrowd:         { type: ["number", "null"] }
+        weekendMultiplier:    { type: ["number", "null"] }
+        apartmentDensity:     { type: ["number", "null"] }
+        estimatedDailyFootfall: { type: ["number", "null"] }
+        hasNightlife:         { type: ["boolean", "null"] }
+        hasShoppingActivity:  { type: ["boolean", "null"] }
+        deliveryPlatforms:    { type: ["string", "null"] }
+        peakHours:            { type: ["string", "null"] }
+        avgBasketValue:       { type: ["number", "null"] }
+
+    # ─── Financial Simulation ──────────────────────────────────
+    FinancialSimulation:
+      type: object
+      properties:
+        capex:                { type: ["number", "null"] }
+        monthlyRent:          { type: ["number", "null"] }
+        monthlyStaffCost:     { type: ["number", "null"] }
+        monthlyUtilities:     { type: ["number", "null"] }
+        monthlyInventory:     { type: ["number", "null"] }
+        monthlyMarketing:     { type: ["number", "null"] }
+        monthlyOpex:          { type: ["number", "null"] }
+        monthlyRevenue:       { type: ["number", "null"] }
+        grossMarginPct:       { type: ["number", "null"] }
+        ebitda:               { type: ["number", "null"] }
+        breakEvenMonths:      { type: ["number", "null"] }
+        roiPct:               { type: ["number", "null"] }
+        irrPct:               { type: ["number", "null"] }
+        paybackPeriodMonths:  { type: ["number", "null"] }
+        year1Revenue:         { type: ["number", "null"] }
+        year3Revenue:         { type: ["number", "null"] }
+        year5Revenue:         { type: ["number", "null"] }
+        deliveryCommissionPct: { type: ["number", "null"] }
+
+    FinancialInput:
+      type: object
+      properties:
+        capex:                { type: number }
+        monthlyRent:          { type: number }
+        monthlyStaffCost:     { type: number }
+        monthlyUtilities:     { type: number }
+        monthlyInventory:     { type: number }
+        monthlyMarketing:     { type: number }
+        estimatedDailyRevenue: { type: number }
+        grossMarginPct:       { type: number }
+        deliveryCommissionPct: { type: number }
+
+    # ─── AI Scoring ────────────────────────────────────────────
+    ScoringWeights:
+      type: object
+      required: [id, populationDensity, youngPopulation, officeDensity, studentDensity, deliveryDemand, commercialActivity, competitionGap, accessibility, rentalAffordability, tourism, nightlife, income, growthProjection, updatedAt]
+      properties:
+        id:                  { type: integer }
+        populationDensity:   { type: number }
+        youngPopulation:     { type: number }
+        officeDensity:       { type: number }
+        studentDensity:      { type: number }
+        deliveryDemand:      { type: number }
+        commercialActivity:  { type: number }
+        competitionGap:      { type: number }
+        accessibility:       { type: number }
+        rentalAffordability: { type: number }
+        tourism:             { type: number }
+        nightlife:           { type: number }
+        income:              { type: number }
+        growthProjection:    { type: number }
+        updatedAt:           { type: string }
+
+    ScoringWeightsUpdate:
+      type: object
+      properties:
+        populationDensity:   { type: number }
+        youngPopulation:     { type: number }
+        officeDensity:       { type: number }
+        studentDensity:      { type: number }
+        deliveryDemand:      { type: number }
+        commercialActivity:  { type: number }
+        competitionGap:      { type: number }
+        accessibility:       { type: number }
+        rentalAffordability: { type: number }
+        tourism:             { type: number }
+        nightlife:           { type: number }
+        income:              { type: number }
+        growthProjection:    { type: number }
+
+    ScoreResult:
+      type: object
+      required: [locationId, overallScore, recommendation, riskLevel, confidenceLevel, breakdown]
+      properties:
+        locationId:          { type: integer }
+        overallScore:        { type: number }
+        recommendation:      { type: string }
+        riskLevel:           { type: string }
+        confidenceLevel:     { type: string }
+        breakdown:
+          $ref: "#/components/schemas/ScoreBreakdown"
+
+    ScoreBreakdown:
+      type: object
+      properties:
+        populationDensityScore:   { type: ["number", "null"] }
+        youngPopulationScore:     { type: ["number", "null"] }
+        officeDensityScore:       { type: ["number", "null"] }
+        studentDensityScore:      { type: ["number", "null"] }
+        deliveryDemandScore:      { type: ["number", "null"] }
+        commercialActivityScore:  { type: ["number", "null"] }
+        competitionGapScore:      { type: ["number", "null"] }
+        accessibilityScore:       { type: ["number", "null"] }
+        rentalAffordabilityScore: { type: ["number", "null"] }
+        tourismScore:             { type: ["number", "null"] }
+        nightlifeScore:           { type: ["number", "null"] }
+        incomeScore:              { type: ["number", "null"] }
+        growthProjectionScore:    { type: ["number", "null"] }
+
+    # ─── Dashboard ─────────────────────────────────────────────
+    DashboardSummary:
+      type: object
+      required: [totalLocations, shortlistedLocations, approvedLocations, statesCovered, avgOverallScore, topCity, topState, competitorCount]
+      properties:
+        totalLocations:       { type: integer }
+        shortlistedLocations: { type: integer }
+        approvedLocations:    { type: integer }
+        statesCovered:        { type: integer }
+        avgOverallScore:      { type: number }
+        topCity:              { type: string }
+        topState:             { type: string }
+        competitorCount:      { type: integer }
+        locationsThisMonth:   { type: integer }
+
+    StateRanking:
+      type: object
+      required: [state, avgScore, locationCount, topCity, recommendation]
+      properties:
+        state:          { type: string }
+        avgScore:       { type: number }
+        locationCount:  { type: integer }
+        topCity:        { type: string }
+        recommendation: { type: string }
+        growthRate:     { type: ["number", "null"] }
+
+    ScoreBucket:
+      type: object
+      required: [range, count]
+      properties:
+        range: { type: string }
+        count: { type: integer }
+        label: { type: string }
+
+    CompetitorHeatmapEntry:
+      type: object
+      required: [city, state, count, dominantType]
+      properties:
+        city:         { type: string }
+        state:        { type: string }
+        count:        { type: integer }
+        dominantType: { type: string }
+        avgRating:    { type: ["number", "null"] }
