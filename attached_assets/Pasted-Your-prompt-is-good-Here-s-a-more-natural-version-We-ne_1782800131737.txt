@@ -1,0 +1,472 @@
+Your prompt is good. Here’s a more natural version:
+
+“We need to build this as a dynamic platform that can analyze and generate expansion intelligence for any company. The admin should only provide the company details, competitors, and target expansion area (state, district, or all of India). After submission, the AI agents should automatically collect real-world data, analyze it, and build all dashboards, locations, markets, competitors, financial simulations, and scoring sections. Create an LLM-friendly master prompt to build this platform. Also, the dashboard should have a modern design similar to the reference image, but it must not copy it directly. Instead, use our own functionality with a premium card design, color palette, and component system.”
+
+⸻
+
+This is the platform I think you are actually trying to build
+
+You’re not building a dashboard.
+
+You’re not building a market research tool.
+
+You’re not even building a site selection system.
+
+You are building an Autonomous Retail Intelligence Platform (ARIP).
+
+Think of it like this:
+
+                    ┌────────────────────────────┐
+                    │      Company Profile       │
+                    │      (Admin Input)         │
+                    └─────────────┬──────────────┘
+                                  │
+                                  ▼
+                   AI Research Orchestrator Agent
+                                  │
+      ┌──────────┬────────────┬────────────┬────────────┐
+      ▼          ▼            ▼            ▼
+ Market AI   Competitor AI  GIS AI    Logistics AI
+      │          │            │            │
+      ▼          ▼            ▼            ▼
+ Financial AI  Demand AI  Forecast AI  Reporting AI
+      └──────────┴────────────┴────────────┘
+                     │
+                     ▼
+            Retail Intelligence Database
+                     │
+                     ▼
+        Executive Dashboard + Reports
+
+This is closer to how enterprise strategy platforms are designed.
+
+⸻
+
+The Workflow
+
+Instead of asking users to build dashboards manually, your platform should generate them automatically.
+
+Step 1 — Company Setup
+
+The admin only fills in a wizard.
+
+Example:
+
+Company Name
+Mouzy
+Industry
+Beverage Retail
+Headquarters
+Kerala
+Current States
+Kerala
+Business Model
+Owned + Franchise
+Products
+Milk
+Shakes
+Ice Cream
+Juices
+Expansion Goal
+National
+Timeline
+3 Years
+Budget
+₹30 Crore
+
+⸻
+
+Step 2 — Competitors
+
+Milma
+Amul
+Naturals
+Juice Lounge
+Frozen Bottle
+Local Juice Shops
+Tea Shops
+Bubble Tea
+Cafe Coffee Day
+Starbucks
+Petrol Pump Beverage Counters
+
+⸻
+
+Step 3 — Expansion Scope
+
+○ India
+○ Multiple States
+○ Single State
+○ District
+○ City
+○ Custom Polygon
+
+⸻
+
+Step 4 — Click
+
+Generate Expansion Intelligence
+
+Nothing else.
+
+⸻
+
+Then the AI takes over.
+
+No manual work.
+
+⸻
+
+Agent 1
+
+Market Research Agent
+
+Collects
+
+* Census
+* Population
+* Income
+* Urban growth
+* Tourism
+* Employment
+
+⸻
+
+Agent 2
+
+GIS Intelligence Agent
+
+Maps
+
+* Roads
+* Metro
+* Bus stations
+* Airports
+* Colleges
+* Offices
+* Hospitals
+* Residential areas
+
+⸻
+
+Agent 3
+
+Competitor Intelligence Agent
+
+Finds
+
+Every
+
+Milma Booth
+
+Juice Shop
+
+Tea Shop
+
+Cafe
+
+Bubble Tea
+
+Fresh Juice
+
+Convenience Store
+
+and maps them.
+
+⸻
+
+Agent 4
+
+Demand Intelligence Agent
+
+Instead of
+
+Population
+
+Predicts
+
+Drink Consumption Potential
+
+using
+
+Students
+
+Office workers
+
+Tourists
+
+Delivery demand
+
+Apartment density
+
+Nightlife
+
+Footfall
+
+⸻
+
+Agent 5
+
+Online Commerce Agent
+
+Researches
+
+Swiggy
+
+Zomato
+
+Blinkit
+
+Instamart
+
+BigBasket
+
+ONDC
+
+Measures
+
+Delivery
+
+Coverage
+
+Peak Hours
+
+Ratings
+
+Customer reviews
+
+Availability
+
+⸻
+
+Agent 6
+
+Financial Intelligence Agent
+
+Creates
+
+Revenue models
+
+Investment
+
+ROI
+
+Break-even
+
+Sensitivity analysis
+
+Scenario planning
+
+⸻
+
+Agent 7
+
+Logistics Agent
+
+Designs
+
+Factory
+↓
+Warehouse
+↓
+Cold Storage
+↓
+Distributor
+↓
+Outlet
+↓
+Customer
+
+Optimizes
+
+Routes
+
+Costs
+
+Spoilage
+
+Fuel
+
+Warehouse placement
+
+⸻
+
+Agent 8
+
+Scoring Agent
+
+Produces
+
+Expansion Score
+Demand Score
+Competition Score
+Growth Score
+Risk Score
+Delivery Score
+Financial Score
+Accessibility Score
+
+⸻
+
+Agent 9
+
+Report Generator
+
+Automatically creates
+
+Executive PDF
+
+PowerPoint
+
+One-page reports
+
+Heatmaps
+
+Interactive dashboard
+
+⸻
+
+The Dashboard Should Be Generated Automatically
+
+Instead of hardcoding widgets,
+
+every card is generated based on the completed analysis.
+
+Example
+
+Dashboard
+Overview
+Expansion
+Markets
+Competitors
+Financials
+Reports
+Settings
+
+⸻
+
+If Mouzy is analyzed
+
+show
+
+Top Expansion State
+Kerala
+Top District
+Ernakulam
+Best Town
+Kakkanad
+Expansion Score
+94
+Expected ROI
+15 Months
+Competition
+Medium
+Investment
+₹22 Lakh
+Delivery Ready
+YES
+
+⸻
+
+If Amul is analyzed
+
+everything changes automatically.
+
+⸻
+
+Dashboard Style
+
+I like the visual language of the screenshot you shared, but I would treat it as design inspiration only, not something to replicate.
+
+The design system should feel like a premium SaaS analytics product.
+
+Design Principles
+
+* Large whitespace
+* Soft rounded corners (18–24px)
+* Floating cards with subtle elevation
+* Clean typography
+* Minimal icons
+* Smooth animations
+* Responsive grid
+* Progressive disclosure (show details on demand)
+* Light and dark themes
+
+Color System
+
+Primary
+
+* Deep charcoal (#111827)
+
+Surface
+
+* White (#FFFFFF)
+
+Background
+
+* Soft gray (#F6F7FB)
+
+Accent
+
+* Emerald (#10B981)
+
+Secondary Accent
+
+* Blue (#3B82F6)
+
+Warning
+
+* Amber (#F59E0B)
+
+Danger
+
+* Red (#EF4444)
+
+Neutral Borders
+
+* #E5E7EB
+
+UI Components
+
+* KPI cards
+* AI insight cards
+* Interactive India map
+* District heatmaps
+* Competitor comparison tables
+* GIS layers
+* Forecast charts
+* Financial simulator panels
+* Timeline components
+* Report generator
+* AI recommendations
+* Smart search
+* Command palette
+* Global filters
+* Saved research workspaces
+
+⸻
+
+The Platform Should Be Company-Agnostic
+
+This is one of the most important architectural decisions.
+
+The system should not contain any Mouzy-specific logic.
+
+Instead, every analysis is driven by a Company Profile object.
+
+That means the same platform can analyze:
+
+* Mouzy
+* Milma
+* Amul
+* Starbucks
+* Domino’s
+* McDonald’s
+* KFC
+* Reliance Retail
+* Third Wave Coffee
+* Any future retail chain
+
+without changing the code.
+
+⸻
