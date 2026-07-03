@@ -6,9 +6,28 @@
 -- Enable PostGIS extension for GIS Intelligence mapping
 CREATE EXTENSION IF NOT EXISTS postgis;
 
+-- Drop table order to avoid constraint issues during recreation
+DROP TABLE IF EXISTS reports CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS market_scores CASCADE;
+DROP TABLE IF EXISTS research_items CASCADE;
+DROP TABLE IF EXISTS ai_tasks CASCADE;
+DROP TABLE IF EXISTS ai_agents CASCADE;
+DROP TABLE IF EXISTS suppliers CASCADE;
+DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS sales_data CASCADE;
+DROP TABLE IF EXISTS warehouses CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
+DROP TABLE IF EXISTS outlets CASCADE;
+DROP TABLE IF EXISTS data_uploads CASCADE;
+DROP TABLE IF EXISTS competitors CASCADE;
+DROP TABLE IF EXISTS expansion_goals CASCADE;
+DROP TABLE IF EXISTS company_members CASCADE;
+DROP TABLE IF EXISTS companies CASCADE;
+
 -- ── 1. COMPANIES ──────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS companies (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE companies (
+    id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     industry TEXT NOT NULL,
     business_category TEXT,
@@ -32,9 +51,9 @@ CREATE TABLE IF NOT EXISTS companies (
 );
 
 -- ── 2. USERS & COMPANY MEMBERS ────────────────────────────────────
-CREATE TABLE IF NOT EXISTS company_members (
+CREATE TABLE company_members (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     user_id UUID NOT NULL, -- Reference to auth.users (Supabase native Auth)
     role TEXT NOT NULL DEFAULT 'viewer' CHECK (role IN ('admin', 'manager', 'analyst', 'viewer')),
     name TEXT NOT NULL,
@@ -45,9 +64,9 @@ CREATE TABLE IF NOT EXISTS company_members (
 );
 
 -- ── 3. EXPANSION GOALS ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS expansion_goals (
+CREATE TABLE expansion_goals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL UNIQUE,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL UNIQUE,
     target_states JSONB NOT NULL DEFAULT '[]',
     target_districts JSONB NOT NULL DEFAULT '[]',
     target_cities JSONB NOT NULL DEFAULT '[]',
@@ -61,9 +80,9 @@ CREATE TABLE IF NOT EXISTS expansion_goals (
 );
 
 -- ── 4. COMPETITORS ────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS competitors (
+CREATE TABLE competitors (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     scope TEXT NOT NULL CHECK (scope IN ('national', 'regional', 'local')),
     industry TEXT NOT NULL,
@@ -77,9 +96,9 @@ CREATE TABLE IF NOT EXISTS competitors (
 );
 
 -- ── 5. DATA UPLOADS ────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS data_uploads (
+CREATE TABLE data_uploads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     data_type TEXT NOT NULL,
     file_name TEXT NOT NULL,
     file_size INTEGER NOT NULL,
@@ -94,9 +113,9 @@ CREATE TABLE IF NOT EXISTS data_uploads (
 );
 
 -- ── 6. OUTLETS ────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS outlets (
+CREATE TABLE outlets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     address TEXT,
     city TEXT NOT NULL,
@@ -115,9 +134,9 @@ CREATE TABLE IF NOT EXISTS outlets (
 CREATE INDEX IF NOT EXISTS outlets_geom_idx ON outlets USING GIST (geom);
 
 -- ── 7. PRODUCTS ───────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     sku TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -130,9 +149,9 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 -- ── 8. WAREHOUSES ─────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS warehouses (
+CREATE TABLE warehouses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     address TEXT,
     city TEXT NOT NULL,
@@ -151,9 +170,9 @@ CREATE TABLE IF NOT EXISTS warehouses (
 CREATE INDEX IF NOT EXISTS warehouses_geom_idx ON warehouses USING GIST (geom);
 
 -- ── 9. SALES DATA ─────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS sales_data (
+CREATE TABLE sales_data (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     outlet_id UUID REFERENCES outlets(id) ON DELETE CASCADE NOT NULL,
     transaction_id TEXT NOT NULL,
     amount REAL NOT NULL,
@@ -162,9 +181,9 @@ CREATE TABLE IF NOT EXISTS sales_data (
 );
 
 -- ── 10. INVENTORY ─────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS inventory (
+CREATE TABLE inventory (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     warehouse_id UUID REFERENCES warehouses(id) ON DELETE CASCADE NOT NULL,
     product_id UUID REFERENCES products(id) ON DELETE CASCADE NOT NULL,
     current_stock INTEGER NOT NULL DEFAULT 0,
@@ -177,9 +196,9 @@ CREATE TABLE IF NOT EXISTS inventory (
 );
 
 -- ── 11. SUPPLIERS ─────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS suppliers (
+CREATE TABLE suppliers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     category TEXT NOT NULL,
     rating REAL,
@@ -190,9 +209,9 @@ CREATE TABLE IF NOT EXISTS suppliers (
 );
 
 -- ── 12. AI AGENTS & TASKS ─────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS ai_agents (
+CREATE TABLE ai_agents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     type TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'idle',
@@ -203,7 +222,7 @@ CREATE TABLE IF NOT EXISTS ai_agents (
     UNIQUE (company_id, type)
 );
 
-CREATE TABLE IF NOT EXISTS ai_tasks (
+CREATE TABLE ai_tasks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     agent_id UUID REFERENCES ai_agents(id) ON DELETE CASCADE NOT NULL,
     description TEXT NOT NULL,
@@ -216,9 +235,9 @@ CREATE TABLE IF NOT EXISTS ai_tasks (
 );
 
 -- ── 13. RESEARCH ITEMS & GEOGRAPHIC SCORES ─────────────────────────
-CREATE TABLE IF NOT EXISTS research_items (
+CREATE TABLE research_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     title TEXT NOT NULL,
     source TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -228,9 +247,9 @@ CREATE TABLE IF NOT EXISTS research_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS market_scores (
+CREATE TABLE market_scores (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     level TEXT NOT NULL,
     state TEXT NOT NULL,
@@ -244,9 +263,9 @@ CREATE TABLE IF NOT EXISTS market_scores (
 );
 
 -- ── 14. PLATFORM GENERALS ─────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS notifications (
+CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     type TEXT NOT NULL,
     title TEXT NOT NULL,
     message TEXT NOT NULL,
@@ -255,9 +274,9 @@ CREATE TABLE IF NOT EXISTS notifications (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS reports (
+CREATE TABLE reports (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE NOT NULL,
     title TEXT NOT NULL,
     type TEXT NOT NULL,
     description TEXT,
