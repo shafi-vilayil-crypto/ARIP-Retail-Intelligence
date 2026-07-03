@@ -1,15 +1,13 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "dist/index.mjs",
-      "use": "@vercel/node"
+  "functions": {
+    "dist/index.mjs": {
+      "runtime": "@vercel/node"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "dist/index.mjs"
+      "source": "/api/:path*",
+      "destination": "/dist/index.mjs"
     }
   ]
 }
