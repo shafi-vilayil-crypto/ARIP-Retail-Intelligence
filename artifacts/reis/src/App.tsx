@@ -102,6 +102,7 @@ export default function App() {
           <Route path="/register" component={RegisterPage} />
           <Route path="/companies" component={CompanySelectPage} />
           <Route path="/onboarding" component={OnboardingPage} />
+          <Route path="/app" component={PlatformRouter} />
           <Route path="/app/:any*" component={PlatformRouter} />
           <Route component={NotFound} />
         </Switch>

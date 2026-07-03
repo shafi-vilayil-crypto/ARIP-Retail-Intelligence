@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "wouter";
 import { useOnboardingStore } from "@/shared/stores/onboardingStore";
 import { useCompanyStore } from "@/shared/stores/companyStore";
+import { useCreateCompany } from "@workspace/api-client-react";
 import WizardProgress from "../components/WizardProgress";
 import CompanyProfileStep from "../steps/CompanyProfileStep";
 import ExpansionGoalsStep from "../steps/ExpansionGoalsStep";
@@ -29,37 +30,39 @@ export default function OnboardingPage() {
 
   const { addCompany, setActiveCompany } = useCompanyStore();
 
-  const handleFinish = () => {
-    // Generate new mock company profile using wizard details
-    const newCompId = `c_${Date.now()}`;
-    const brandProfile: any = {
-      id: newCompId,
-      name: companyProfile.name || "My Retail Company",
-      industry: companyProfile.industry || "Supermarket",
-      businessCategory: companyProfile.businessCategory || "General Retail",
-      headquarters: companyProfile.headquarters || "Mumbai, Maharashtra",
-      website: companyProfile.website,
-      logoUrl: undefined,
-      brandColors: companyProfile.brandColors || { primary: "#10B981", secondary: "#3B82F6", accent: "#F59E0B" },
-      currentStates: companyProfile.currentStates || [],
-      currentCities: companyProfile.currentCities || [],
-      businessModel: companyProfile.businessModel || "Owned",
-      franchiseOrOwned: companyProfile.franchiseOrOwned || "Owned",
-      productCategories: companyProfile.productCategories || ["General"],
-      outletCount: companyProfile.outletCount || 0,
-      warehouseCount: companyProfile.warehouseCount || 0,
-      manufacturingUnits: companyProfile.manufacturingUnits || 0,
-      distributionCenters: companyProfile.distributionCenters || 0,
-      onboardingCompleted: true,
-      onboardingStep: 5,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+  const { mutateAsync: createCompany } = useCreateCompany();
 
-    addCompany(brandProfile);
-    setActiveCompany(brandProfile);
-    reset();
-    setLocation("/app");
+  const handleFinish = async () => {
+    try {
+      // 1. Create company in the real backend database
+      const res = await createCompany({
+        data: {
+          name: companyProfile.name || "My Retail Company",
+          industry: companyProfile.industry || "Supermarket",
+          headquarters: companyProfile.headquarters || "Mumbai, Maharashtra",
+          businessModel: companyProfile.businessModel || "Owned",
+          currentStates: companyProfile.currentStates || [],
+          products: companyProfile.productCategories || [],
+          competitors: competitors.map(c => c.name) || [],
+          expansionScope: expansionGoals.focusArea || "India",
+          expansionGoal: expansionGoals.primaryGoal || "National expansion",
+          timeline: expansionGoals.timeline || "3 Years",
+        }
+      });
+
+      // 2. Trigger the AI analysis asynchronously in the background
+      fetch(`/api/companies/${res.id}/analyze`, { method: "POST" }).catch(console.error);
+
+      // 3. Keep local UI state in sync (optional, for immediate UI feedback before refresh)
+      setActiveCompany({ ...companyProfile, id: String(res.id) } as any);
+      reset();
+
+      // 4. Go to dashboard
+      setLocation("/app");
+    } catch (err) {
+      console.error("Failed to create company:", err);
+      alert("Failed to create company. Check the console.");
+    }
   };
 
   const renderStepContent = () => {

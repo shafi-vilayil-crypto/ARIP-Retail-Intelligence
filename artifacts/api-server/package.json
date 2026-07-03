@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
     "build": "tsc -b ../../tsconfig.json && node ./build.mjs",
-    "start": "node ./api/index.js",
+    "start": "node --env-file=../../.env ./api/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
