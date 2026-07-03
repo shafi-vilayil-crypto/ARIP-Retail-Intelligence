@@ -48,25 +48,30 @@ router.post("/companies", async (req, res): Promise<void> => {
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
 
   const d = parsed.data;
-  const [row] = await db.insert(companiesTable).values({
-    name: d.name,
-    industry: d.industry ?? "Beverage Retail",
-    headquarters: d.headquarters,
-    currentStates: d.currentStates ?? [],
-    businessModel: d.businessModel ?? "Owned",
-    products: d.products ?? [],
-    competitors: d.competitors ?? [],
-    expansionGoal: d.expansionGoal ?? "National",
-    expansionScope: d.expansionScope ?? "India",
-    expansionStates: d.expansionStates ?? [],
-    timeline: d.timeline ?? "3 Years",
-    budget: d.budget ?? null,
-    analysisStatus: "idle",
-    analysisProgress: 0,
-    analysisLog: [],
-  }).returning();
+  try {
+    const [row] = await db.insert(companiesTable).values({
+      name: d.name,
+      industry: d.industry ?? "Beverage Retail",
+      headquarters: d.headquarters,
+      currentStates: d.currentStates ?? [],
+      businessModel: d.businessModel ?? "Owned",
+      products: d.products ?? [],
+      competitors: d.competitors ?? [],
+      expansionGoal: d.expansionGoal ?? "National",
+      expansionScope: d.expansionScope ?? "India",
+      expansionStates: d.expansionStates ?? [],
+      timeline: d.timeline ?? "3 Years",
+      budget: d.budget ?? null,
+      analysisStatus: "idle",
+      analysisProgress: 0,
+      analysisLog: [],
+    }).returning();
 
-  res.status(201).json(formatCompany(row));
+    res.status(201).json(formatCompany(row));
+  } catch (err: any) {
+    console.error("CREATE COMPANY DATABASE ERROR:", err);
+    res.status(500).json({ error: err.message, detail: err.detail });
+  }
 });
 
 // ─── Get company ──────────────────────────────────────────────
