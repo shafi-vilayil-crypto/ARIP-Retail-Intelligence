@@ -31,9 +31,17 @@ export default function OnboardingPage() {
   const { addCompany, setActiveCompany } = useCompanyStore();
 
   const { mutateAsync: createCompany } = useCreateCompany();
-
   const handleFinish = async () => {
     try {
+      let calculatedScope = "India";
+      if (expansionGoals.targetStates && expansionGoals.targetStates.length > 1) {
+        calculatedScope = "Multiple States";
+      } else if (expansionGoals.targetStates && expansionGoals.targetStates.length === 1) {
+        calculatedScope = "Single State";
+      } else if (expansionGoals.targetCities && expansionGoals.targetCities.length > 0) {
+        calculatedScope = "City";
+      }
+
       // 1. Create company in the real backend database
       const res = await createCompany({
         data: {
@@ -44,9 +52,13 @@ export default function OnboardingPage() {
           currentStates: companyProfile.currentStates || [],
           products: companyProfile.productCategories || [],
           competitors: competitors.map(c => c.name) || [],
-          expansionScope: expansionGoals.focusArea || "India",
-          expansionGoal: expansionGoals.primaryGoal || "National expansion",
-          timeline: expansionGoals.timeline || "3 Years",
+          expansionScope: calculatedScope,
+          expansionGoal: expansionGoals.priorityMarkets && expansionGoals.priorityMarkets.length > 0
+            ? `Expand footprint focusing on: ${expansionGoals.priorityMarkets.join(", ")}`
+            : "National expansion and market penetration",
+          timeline: expansionGoals.expansionTimeline || "3 Years",
+          budget: expansionGoals.investmentBudget || "",
+          expansionStates: expansionGoals.targetStates || [],
         }
       });
 
